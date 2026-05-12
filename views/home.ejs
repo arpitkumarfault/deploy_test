@@ -1,12 +1,522 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A beautiful modern homepage built with EJS." />
+  <title><%= pageTitle || 'Luma Home' %></title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2.4rem, 1.4rem + 3.5vw, 4.8rem);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.9rem;
+      --radius-lg: 1.4rem;
+      --radius-xl: 2rem;
+      --color-bg: #f6f2eb;
+      --color-surface: rgba(255,255,255,0.72);
+      --color-surface-strong: #fffdfa;
+      --color-text: #201a16;
+      --color-text-muted: #6f665f;
+      --color-border: rgba(32, 26, 22, 0.1);
+      --color-primary: #0f766e;
+      --color-primary-hover: #115e59;
+      --color-accent: #b45309;
+      --color-accent-soft: rgba(180, 83, 9, 0.12);
+      --shadow-sm: 0 10px 30px rgba(30, 22, 17, 0.07);
+      --shadow-lg: 0 30px 80px rgba(30, 22, 17, 0.14);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --container: 1180px;
+    }
+
+    [data-theme="dark"] {
+      --color-bg: #161311;
+      --color-surface: rgba(33, 29, 26, 0.78);
+      --color-surface-strong: #211d1a;
+      --color-text: #f4ede6;
+      --color-text-muted: #b8ada4;
+      --color-border: rgba(255, 247, 240, 0.1);
+      --color-primary: #3bb5a9;
+      --color-primary-hover: #6bd1c7;
+      --color-accent: #f2a65a;
+      --color-accent-soft: rgba(242, 166, 90, 0.12);
+      --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(180, 83, 9, 0.10), transparent 24%),
+        var(--color-bg);
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .container { width: min(calc(100% - 2rem), var(--container)); margin-inline: auto; }
+    .skip-link {
+      position: absolute; left: 1rem; top: -3rem; background: var(--color-primary); color: #fff;
+      padding: 0.75rem 1rem; border-radius: var(--radius-sm); z-index: 100;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--color-bg) 70%, transparent);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-4); padding: 1rem 0;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 0.8rem; font-weight: 700; }
+    .brand-mark {
+      width: 2.5rem; height: 2.5rem; border-radius: 50%; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    .brand-mark svg { width: 1.15rem; height: 1.15rem; }
+    .nav-links { display: flex; align-items: center; gap: 1.25rem; color: var(--color-text-muted); }
+    .nav-links a:hover { color: var(--color-text); }
+    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+    .theme-toggle, .menu-toggle {
+      width: 2.8rem; height: 2.8rem; border-radius: 999px; border: 1px solid var(--color-border);
+      background: var(--color-surface); color: var(--color-text); display: grid; place-items: center;
+    }
+    .menu-toggle { display: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem;
+      min-height: 3rem; padding: 0.85rem 1.3rem; border-radius: 999px; border: 1px solid transparent;
+      font-size: var(--text-sm); font-weight: 600; transition: 0.22s ease;
+    }
+    .btn-primary { background: var(--color-primary); color: white; box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--color-text); border-color: var(--color-border); }
+    .btn-secondary:hover { background: var(--color-surface); }
+
+    .hero {
+      padding: clamp(4rem, 7vw, 7rem) 0 clamp(3rem, 6vw, 6rem);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 5rem); align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.9rem;
+      border-radius: 999px; background: var(--color-accent-soft); color: var(--color-accent);
+      font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero h1 {
+      margin: 1.25rem 0 1rem; font-family: var(--font-display); font-size: var(--text-2xl);
+      line-height: 0.98; letter-spacing: -0.03em; max-width: 12ch;
+    }
+    .hero p {
+      margin: 0 0 1.8rem; color: var(--color-text-muted); max-width: 58ch;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-bottom: 1.8rem; }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem;
+    }
+    .stat {
+      padding: 1rem 1.1rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      background: var(--color-surface); box-shadow: var(--shadow-sm);
+    }
+    .stat strong { display: block; font-size: 1.4rem; margin-bottom: 0.2rem; }
+    .stat span { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+    .hero-card {
+      position: relative; overflow: hidden; border-radius: 2rem; padding: 1.4rem;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface-strong) 86%, transparent), var(--color-surface));
+      border: 1px solid var(--color-border); box-shadow: var(--shadow-lg);
+    }
+    .hero-visual {
+      aspect-ratio: 4 / 4.6; border-radius: 1.5rem; padding: 1.5rem;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.95), rgba(255,255,255,0.2)),
+        linear-gradient(145deg, rgba(15,118,110,0.24), rgba(180,83,9,0.20));
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .floating-chip {
+      align-self: flex-start; padding: 0.55rem 0.85rem; border-radius: 999px;
+      background: rgba(255,255,255,0.7); color: #1a1714; font-size: var(--text-xs); font-weight: 700;
+    }
+    .visual-panel {
+      margin-left: auto; width: min(100%, 19rem); padding: 1.2rem; border-radius: 1.4rem;
+      background: rgba(255,255,255,0.74); backdrop-filter: blur(10px); color: #1d1916;
+      box-shadow: 0 18px 40px rgba(30, 22, 17, 0.12);
+    }
+    .visual-panel h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
+    .mini-list { display: grid; gap: 0.85rem; margin-top: 1rem; }
+    .mini-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding-bottom: 0.75rem; border-bottom: 1px solid rgba(29,25,22,0.08);
+    }
+    .mini-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .mini-item small { color: #6f665f; display: block; }
+
+    .section { padding: clamp(3.5rem, 6vw, 6rem) 0; }
+    .section-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 2rem;
+    }
+    .section-head h2 {
+      margin: 0; font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.05;
+    }
+    .section-head p { margin: 0; color: var(--color-text-muted); max-width: 52ch; }
+
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem;
+    }
+    .feature-card {
+      padding: 1.5rem; border-radius: var(--radius-lg); background: var(--color-surface);
+      border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
+    }
+    .feature-card .icon {
+      width: 3rem; height: 3rem; border-radius: 1rem; display: grid; place-items: center;
+      background: var(--color-accent-soft); color: var(--color-accent); margin-bottom: 1rem;
+    }
+    .feature-card h3 { margin: 0 0 0.6rem; font-size: 1.1rem; }
+    .feature-card p { margin: 0; color: var(--color-text-muted); }
+
+    .showcase {
+      display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 1.4rem; align-items: stretch;
+    }
+    .showcase-main, .showcase-side {
+      border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--color-border);
+      background: var(--color-surface); box-shadow: var(--shadow-sm);
+    }
+    .showcase-main { padding: 2rem; }
+    .showcase-side {
+      padding: 1.5rem; display: grid; gap: 1rem;
+      background: linear-gradient(180deg, var(--color-surface), color-mix(in srgb, var(--color-primary) 8%, var(--color-surface)));
+    }
+    .showcase-badge {
+      display: inline-flex; width: fit-content; padding: 0.45rem 0.8rem; border-radius: 999px;
+      background: var(--color-accent-soft); color: var(--color-accent); font-size: var(--text-xs); font-weight: 700;
+    }
+    .check-list { display: grid; gap: 0.9rem; margin-top: 1.2rem; }
+    .check-item { display: flex; gap: 0.8rem; align-items: start; }
+    .check-dot {
+      flex: 0 0 auto; width: 1.4rem; height: 1.4rem; border-radius: 50%; margin-top: 0.12rem;
+      background: var(--color-primary); color: white; display: grid; place-items: center; font-size: 0.85rem;
+    }
+
+    .testimonial {
+      padding: 2rem; border-radius: var(--radius-xl); background: var(--color-surface);
+      border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
+    }
+    .testimonial p { font-size: var(--text-lg); max-width: 46ch; margin: 0 0 1rem; }
+    .author { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+    .cta {
+      padding: clamp(2rem, 6vw, 4rem); border-radius: 2rem;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 88%, white 12%), color-mix(in srgb, var(--color-accent) 72%, var(--color-primary) 28%));
+      color: white; box-shadow: var(--shadow-lg);
+      display: grid; gap: 1rem; align-items: center; grid-template-columns: 1.1fr auto;
+    }
+    .cta h2 { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
+    .cta p { margin: 0; max-width: 44ch; color: rgba(255,255,255,0.86); }
+    .cta .btn-secondary { color: white; border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); }
+
+    .site-footer {
+      padding: 1.5rem 0 2.5rem; color: var(--color-text-muted);
+    }
+    .footer-bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      padding-top: 1rem; border-top: 1px solid var(--color-border);
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid, .showcase, .cta { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .hero h1 { max-width: 14ch; }
+      .cta { text-align: left; }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        position: absolute; left: 1rem; right: 1rem; top: calc(100% + 0.75rem); padding: 1rem;
+        border-radius: 1.25rem; border: 1px solid var(--color-border); background: var(--color-surface-strong);
+        box-shadow: var(--shadow-lg); flex-direction: column; align-items: flex-start; display: none;
+      }
+      .nav-links.open { display: flex; }
+      .menu-toggle { display: grid; }
+      .nav .btn-primary { display: none; }
+      .hero-stats { grid-template-columns: 1fr; }
+      .section-head, .footer-bar { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <h1>WELCOME IN HOME PAGE</h1>
-    
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#" class="brand" aria-label="Homepage">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 16V8l6-4 6 4v8l-6 4-6-4Z"></path>
+            <path d="M12 4v16"></path>
+          </svg>
+        </span>
+        <span><%= brandName || 'Luma' %></span>
+      </a>
+
+      <nav class="nav-links" id="mobileMenu" aria-label="Primary navigation">
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="#stories">Stories</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button" aria-label="Toggle theme" data-theme-toggle>
+          <span aria-hidden="true">☾</span>
+        </button>
+        <button class="menu-toggle" type="button" aria-label="Toggle menu" data-menu-toggle>
+          <span aria-hidden="true">☰</span>
+        </button>
+        <a href="#contact" class="btn btn-primary">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Crafted in EJS</span>
+          <h1><%= heroTitle || 'Design a homepage that feels premium from the first scroll.' %></h1>
+          <p><%= heroDescription || 'This EJS homepage blends elegant typography, a polished layout, soft gradients, and conversion-focused sections so your product, portfolio, or business makes a strong first impression.' %></p>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Launch your idea</a>
+            <a href="#features" class="btn btn-secondary">Explore sections</a>
+          </div>
+
+          <div class="hero-stats" aria-label="Highlights">
+            <article class="stat">
+              <strong>120+</strong>
+              <span>Projects presented beautifully</span>
+            </article>
+            <article class="stat">
+              <strong>4.9/5</strong>
+              <span>Average client experience</span>
+            </article>
+            <article class="stat">
+              <strong>24h</strong>
+              <span>Typical design turnaround</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-card" aria-hidden="true">
+          <div class="hero-visual">
+            <div class="floating-chip">Minimal · Modern · Responsive</div>
+            <div class="visual-panel">
+              <h3>Homepage structure</h3>
+              <p style="margin:0;color:#6f665f;">Balanced sections with clear hierarchy, soft depth, and memorable calls to action.</p>
+              <div class="mini-list">
+                <div class="mini-item">
+                  <div>
+                    <strong style="display:block;">Hero section</strong>
+                    <small>Clear message and CTA</small>
+                  </div>
+                  <strong>01</strong>
+                </div>
+                <div class="mini-item">
+                  <div>
+                    <strong style="display:block;">Feature blocks</strong>
+                    <small>Elegant cards and spacing</small>
+                  </div>
+                  <strong>02</strong>
+                </div>
+                <div class="mini-item">
+                  <div>
+                    <strong style="display:block;">Conversion area</strong>
+                    <small>Trust-building end section</small>
+                  </div>
+                  <strong>03</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Beautiful by structure</h2>
+          </div>
+          <p>Every block is designed to give your homepage a clean flow, readable content, and a premium visual rhythm on both desktop and mobile.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="icon">✦</div>
+            <h3>Elegant hero</h3>
+            <p>A strong opening area with refined type, supportive copy, and actions that guide the visitor instantly.</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">◌</div>
+            <h3>Responsive layout</h3>
+            <p>The grid adapts smoothly across devices, keeping spacing, readability, and balance intact.</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">⌘</div>
+            <h3>Easy to customize</h3>
+            <p>Because it is written in EJS, you can replace headings, brand names, and content with dynamic values quickly.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container showcase">
+        <article class="showcase-main">
+          <span class="showcase-badge">Why it works</span>
+          <h2 style="margin:1rem 0 0.9rem;font-family:var(--font-display);font-size:var(--text-xl);line-height:1.08;max-width:14ch;">A homepage should feel calm, clear, and trustworthy.</h2>
+          <p style="margin:0;color:var(--color-text-muted);max-width:58ch;">This layout uses generous spacing, layered surfaces, warm neutral colors, and one strong accent so the page looks rich without feeling noisy.</p>
+
+          <div class="check-list">
+            <div class="check-item">
+              <span class="check-dot">✓</span>
+              <div>
+                <strong>Readable content</strong>
+                <div style="color:var(--color-text-muted);">Comfortable body text and balanced headings improve scanning.</div>
+              </div>
+            </div>
+            <div class="check-item">
+              <span class="check-dot">✓</span>
+              <div>
+                <strong>Clean visual hierarchy</strong>
+                <div style="color:var(--color-text-muted);">Visitors immediately understand what matters first.</div>
+              </div>
+            </div>
+            <div class="check-item">
+              <span class="check-dot">✓</span>
+              <div>
+                <strong>Theme toggle included</strong>
+                <div style="color:var(--color-text-muted);">Light and dark modes are built in for a modern experience.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="showcase-side">
+          <div>
+            <small style="color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;">Design note</small>
+            <h3 style="margin:0.5rem 0 0.75rem;font-size:1.2rem;">Ready for startup, portfolio, agency, or SaaS use.</h3>
+            <p style="margin:0;color:var(--color-text-muted);">Swap the content and colors to match your own brand while keeping the same polished structure.</p>
+          </div>
+          <div style="padding:1.1rem;border-radius:1.2rem;background:var(--color-surface-strong);border:1px solid var(--color-border);">
+            <strong style="display:block;margin-bottom:0.45rem;">Best use cases</strong>
+            <p style="margin:0;color:var(--color-text-muted);">Landing page, personal brand, freelancer website, product intro page, or agency homepage.</p>
+          </div>
+          <div style="padding:1.1rem;border-radius:1.2rem;background:var(--color-surface-strong);border:1px solid var(--color-border);">
+            <strong style="display:block;margin-bottom:0.45rem;">Dynamic EJS variables</strong>
+            <p style="margin:0;color:var(--color-text-muted);">Use values like <code>&lt;%= brandName %&gt;</code>, <code>&lt;%= pageTitle %&gt;</code>, and <code>&lt;%= heroTitle %&gt;</code>.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="stories">
+      <div class="container">
+        <div class="testimonial">
+          <p>“The layout feels premium, modern, and easy to trust. It gave our homepage a much stronger first impression without making the design feel crowded.”</p>
+          <div class="author">A happy client · Product founder</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2>Build your next homepage with confidence.</h2>
+            <p>Use this template as your starting point, then connect it with Express and EJS routes to render real content dynamically.</p>
+          </div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <a href="mailto:hello@example.com" class="btn btn-secondary">Contact us</a>
+            <a href="#" class="btn btn-secondary">View demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bar">
+      <span>© <%= new Date().getFullYear() %> <%= brandName || 'Luma' %>. All rights reserved.</span>
+      <span>Built with EJS, CSS, and a little taste.</span>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeToggle = document.querySelector('[data-theme-toggle]');
+      const menuToggle = document.querySelector('[data-menu-toggle]');
+      const mobileMenu = document.getElementById('mobileMenu');
+      let currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+      const setTheme = (theme) => {
+        currentTheme = theme;
+        root.setAttribute('data-theme', theme);
+        if (themeToggle) themeToggle.innerHTML = theme === 'dark' ? '<span aria-hidden="true">☀</span>' : '<span aria-hidden="true">☾</span>';
+      };
+
+      setTheme(currentTheme);
+
+      themeToggle?.addEventListener('click', () => {
+        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+      });
+
+      menuToggle?.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+    })();
+  </script>
 </body>
 </html>
