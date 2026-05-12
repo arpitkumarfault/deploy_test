@@ -1,0 +1,33 @@
+Technical Summary
+
+Jinny Kapur has a basic understanding of JavaScript fundamentals, including loops and array methods like map, filter, and reduce. She demonstrated practical problem-solving ability by applying these concepts to real-world scenarios. Next, she needs to focus on strengthening JavaScript core concepts, including functions, object creation patterns, data types, variable declarations, and control flow structures.
+
+Technical Feedback
+
+Highs: She demonstrated practical application skills by successfully implementing a salary increment solution using map and filter methods on an employee list. She showed understanding of  functions parameters and could effectively manipulate arrays using map,filter buit in functions.
+
+Lows: She needs significant improvement in fundamental JavaScript concepts, including functions as first-class objects, object creation patterns, data types, var vs let distinctions, and control flow structures. Her theoretical understanding requires substantial strengthening to build a solid foundation for advanced topics.
+
+ Soft Skills
+
+She shows inconsistent engagement and lacks the dedication required for effective learning. Her attention during sessions is compromised by mobile phone usage, indicating poor discipline and time management. While she provides average responses during reviews, her overall commitment to technology learning needs considerable improvement to succeed in a professional environment.
+
+ Assessment Date
+24-02-2025
+-------------------------------------------------------------
+ Technical Summary
+
+Sanyam Bhatia has a solid understanding of JavaScript fundamentals, including functions as first-class objects, object creation patterns, prototypes, prototype chaining, and scope concepts (global, local, and function scope). He has demonstrated good conceptual clarity in core JavaScript topics. Next, he will focus on strengthening his knowledge of higher-order functions (map, filter, reduce) and Object-Oriented Programming principles, particularly abstraction and its practical implementation.
+
+ Technical Feedback
+
+Highs: He demonstrated strong conceptual understanding of JavaScript fundamentals, including functions as first-class objects, multiple object creation approaches, prototypes and prototype chaining, and different scope levels. His grasp of these core concepts shows solid foundational knowledge.
+
+Lows: He needs to deepen his understanding of higher-order array methods (map, filter, reduce) and their practical applications. Additionally, his knowledge of OOP principles, particularly abstraction and its code implementation, requires further development to effectively apply these concepts in real-world scenarios.
+
+ Soft Skills
+
+He demonstrates average potential with strong growth mindset and consistent improvement efforts. His hard work and dedication to learning are evident through his progress. He shows good collaboration skills and resilience in overcoming challenges, indicating promising development potential in a professional environment.
+
+ Assessment Date
+13-01-2026
